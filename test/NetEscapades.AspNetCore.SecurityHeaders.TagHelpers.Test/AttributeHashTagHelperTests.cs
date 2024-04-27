@@ -32,7 +32,8 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
             var id = Guid.NewGuid().ToString();
             var tagName = "div";
             var styleAttribute = new TagHelperAttribute("style", inlineStyleSnippet);
-            var tagHelperContext = GetTagHelperContext(id, tagName, new([styleAttribute]));
+            var cspAttribute = new TagHelperAttribute("asp-add-style-attribute-to-csp");
+            var tagHelperContext = GetTagHelperContext(id, tagName, new([styleAttribute, cspAttribute]));
             var tagHelper = new AttributeHashTagHelper()
             {
                 CSPHashType = CSPHashType.SHA256,
@@ -41,7 +42,7 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
 
             var output = new TagHelperOutput(
                tagName,
-               attributes: new TagHelperAttributeList(),
+               attributes: new([styleAttribute, cspAttribute]),
                getChildContentAsync: (useCachedResult, encoder) =>
                {
                    var tagHelperContent = new DefaultTagHelperContent();
@@ -67,7 +68,8 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
             var id = Guid.NewGuid().ToString();
             var tagName = "style";
             var styleAttribute = new TagHelperAttribute("style", inlineStyleSnippet);
-            var tagHelperContext = GetTagHelperContext(id, tagName, new([styleAttribute]));
+            var cspAttribute = new TagHelperAttribute("asp-add-style-attribute-to-csp");
+            var tagHelperContext = GetTagHelperContext(id, tagName, new([styleAttribute, cspAttribute]));
             var tagHelper = new AttributeHashTagHelper()
             {
                 CSPHashType = CSPHashType.SHA256,
@@ -76,7 +78,7 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
 
             var output = new TagHelperOutput(
                tagName,
-               attributes: new TagHelperAttributeList(),
+               attributes: new([styleAttribute, cspAttribute]),
                getChildContentAsync: (useCachedResult, encoder) =>
                {
                    var tagHelperContent = new DefaultTagHelperContent();
