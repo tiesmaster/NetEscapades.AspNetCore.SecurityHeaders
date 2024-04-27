@@ -33,7 +33,7 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
             var tagName = "div";
             var styleAttribute = new TagHelperAttribute("style", inlineStyleSnippet);
             var tagHelperContext = GetTagHelperContext(id, tagName, new([styleAttribute]));
-            var tagHelper = new HashTagHelper()
+            var tagHelper = new AttributeHashTagHelper()
             {
                 CSPHashType = CSPHashType.SHA256,
                 ViewContext = GetViewContext(),
@@ -68,7 +68,7 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
             var tagName = "style";
             var styleAttribute = new TagHelperAttribute("style", inlineStyleSnippet);
             var tagHelperContext = GetTagHelperContext(id, tagName, new([styleAttribute]));
-            var tagHelper = new HashTagHelper()
+            var tagHelper = new AttributeHashTagHelper()
             {
                 CSPHashType = CSPHashType.SHA256,
                 ViewContext = GetViewContext(),
