@@ -22,7 +22,7 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
         const string inlineStyleSnippet = "background: red";
 
         [Fact]
-        public async Task ProcessAsync_Style_GeneratesExpectedOutput()
+        public async Task ProcessAsync_StyleAttribute_GeneratesExpectedOutput()
         {
             // Arrange
             var id = Guid.NewGuid().ToString();
@@ -46,7 +46,7 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
         }
 
         [Fact]
-        public async Task ProcessAsync_Style_AddsHashToHttpContextForOneLineSnippets()
+        public async Task ProcessAsync_StyleAttribute_AddsHashToHttpContext()
         {
             // Arrange
             var id = Guid.NewGuid().ToString();
