@@ -108,6 +108,7 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
             var fixture = CreateFixture(id, tagName, new([inlineScriptAttribute, cspAttribute]));
             var tagHelper = new AttributeHashTagHelper()
             {
+                // TODO: extract this also to the CreateFixture()/CreateSut() method?
                 TargetAttributeName = "onclick",
                 CSPHashType = CSPHashType.SHA256,
                 ViewContext = GetViewContext(),

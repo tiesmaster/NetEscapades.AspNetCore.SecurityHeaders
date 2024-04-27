@@ -48,6 +48,8 @@ public class AttributeHashTagHelper : TagHelper
 
         // TODO: properly handle Value as object (just ToString?)
         // properly handle null results from ToString()
+
+        // TODO: Put back the multi-line unix vs windows line ending handling
         var content = targetAttributeValue.Value.ToString();
 
         var contentBytes = Encoding.UTF8.GetBytes(content!);
