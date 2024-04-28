@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Text;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -15,6 +18,15 @@ public class AttributeHashTagHelper : TagHelper
 {
     private const string AttributeName = "asp-add-attribute-to-csp";
     private const string CspHashTypeAttributeName = "csp-hash-type";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AttributeHashTagHelper"/> class.
+    /// </summary>
+    /// <param name="htmlEncoder">The <see cref="HtmlEncoder"/>.</param>
+    public AttributeHashTagHelper(HtmlEncoder htmlEncoder)
+    {
+        HtmlEncoder = htmlEncoder;
+    }
 
     /// <summary>
     /// Add a <code>asp-add-attribute-to-csp</code> attribute to the element
@@ -34,6 +46,11 @@ public class AttributeHashTagHelper : TagHelper
     [ViewContext]
     public ViewContext? ViewContext { get; set; }
 
+    /// <summary>
+    /// The <see cref="HtmlEncoder"/>.
+    /// </summary>
+    protected HtmlEncoder HtmlEncoder { get; }
+
     /// <inheritdoc />
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
@@ -48,7 +65,7 @@ public class AttributeHashTagHelper : TagHelper
 
         // TODO: properly handle Value as object (just ToString?)
         // properly handle null results from ToString()
-        var content = targetAttributeValue.Value.ToString();
+        var content = GetAttributeValue(targetAttributeValue.Value);
 
         // the hash is calculated based on unix line endings, not windows endings, so account for that
         var unixContent = content!.Replace("\r\n", "\n");
@@ -68,5 +85,23 @@ public class AttributeHashTagHelper : TagHelper
 
         output.Attributes.RemoveAll(AttributeName);
         output.Attributes.RemoveAll(CspHashTypeAttributeName);
+    }
+
+    private string GetAttributeValue(object value)
+    {
+        static string ReadHtmlContent(IHtmlContent htmlContent, HtmlEncoder htmlEncoder)
+        {
+            using var writer = new StringWriter();
+            htmlContent.WriteTo(writer, htmlEncoder);
+            return writer.ToString();
+        }
+
+        return value switch
+        {
+            string s => s,
+            HtmlString hs => hs.ToString(),
+            IHtmlContent hc => ReadHtmlContent(hc, HtmlEncoder),
+            object obj => obj.ToString() !,
+        };
     }
 }

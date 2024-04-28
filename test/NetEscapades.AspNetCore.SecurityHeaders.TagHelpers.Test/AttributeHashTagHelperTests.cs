@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -32,10 +34,10 @@ color: blue;";
             // Arrange
             var id = Guid.NewGuid().ToString();
             var tagName = "div";
-            var styleAttribute = new TagHelperAttribute("style", inlineStyleSnippet);
+            var styleAttribute = new TagHelperAttribute("style", new MyHtmlString(inlineStyleSnippet));
             var cspAttribute = new TagHelperAttribute("asp-add-attribute-to-csp", "style");
             var fixture = CreateFixture(id, tagName, new([styleAttribute, cspAttribute]));
-            var tagHelper = new AttributeHashTagHelper()
+            var tagHelper = new AttributeHashTagHelper(HtmlEncoder.Default)
             {
                 TargetAttributeName = "style",
                 CSPHashType = CSPHashType.SHA256,
@@ -57,10 +59,10 @@ color: blue;";
             // Arrange
             var id = Guid.NewGuid().ToString();
             var tagName = "div";
-            var styleAttribute = new TagHelperAttribute("style", inlineStyleSnippet);
+            var styleAttribute = new TagHelperAttribute("style", new MyHtmlString(inlineStyleSnippet));
             var cspAttribute = new TagHelperAttribute("asp-add-attribute-to-csp", "style");
             var fixture = CreateFixture(id, tagName, new([styleAttribute, cspAttribute]));
-            var tagHelper = new AttributeHashTagHelper()
+            var tagHelper = new AttributeHashTagHelper(HtmlEncoder.Default)
             {
                 TargetAttributeName = "style",
                 CSPHashType = CSPHashType.SHA256,
@@ -85,7 +87,7 @@ color: blue;";
             var styleAttribute = new TagHelperAttribute("style", inlineMultiLineStyleSnippet);
             var cspAttribute = new TagHelperAttribute("asp-add-attribute-to-csp", "style");
             var fixture = CreateFixture(id, tagName, new([styleAttribute, cspAttribute]));
-            var tagHelper = new AttributeHashTagHelper()
+            var tagHelper = new AttributeHashTagHelper(HtmlEncoder.Default)
             {
                 TargetAttributeName = "style",
                 CSPHashType = CSPHashType.SHA256,
@@ -110,7 +112,7 @@ color: blue;";
             var inlineScriptAttribute = new TagHelperAttribute("onclick", inlineScriptSnippet);
             var cspAttribute = new TagHelperAttribute("asp-add-attribute-to-csp", "onclick");
             var fixture = CreateFixture(id, tagName, new([inlineScriptAttribute, cspAttribute]));
-            var tagHelper = new AttributeHashTagHelper()
+            var tagHelper = new AttributeHashTagHelper(HtmlEncoder.Default)
             {
                 TargetAttributeName = "onclick",
                 CSPHashType = CSPHashType.SHA256,
@@ -135,7 +137,7 @@ color: blue;";
             var inlineScriptAttribute = new TagHelperAttribute("onclick", inlineScriptSnippet);
             var cspAttribute = new TagHelperAttribute("asp-add-attribute-to-csp", "onclick");
             var fixture = CreateFixture(id, tagName, new([inlineScriptAttribute, cspAttribute]));
-            var tagHelper = new AttributeHashTagHelper()
+            var tagHelper = new AttributeHashTagHelper(HtmlEncoder.Default)
             {
                 TargetAttributeName = "onclick",
                 CSPHashType = CSPHashType.SHA256,
@@ -196,6 +198,21 @@ color: blue;";
         {
             public TagHelperContext Context { get; set; } = default!;
             public TagHelperOutput Output { get; set; } = default!;
+        }
+
+        private class MyHtmlString : IHtmlContent
+        {
+            private readonly string _value;
+
+            public MyHtmlString(string value)
+            {
+                _value = value;
+            }
+
+            public void WriteTo(TextWriter writer, HtmlEncoder encoder)
+            {
+                writer.Write(_value);
+            }
         }
     }
 }
