@@ -29,7 +29,7 @@ public class Startup
             .AddContentSecurityPolicy(builder =>
             {
                 builder.AddUpgradeInsecureRequests();
-                builder.AddDefaultSrc().Self(); 
+                builder.AddDefaultSrc().Self();
                 builder.AddConnectSrc().From("*");
                 builder.AddFontSrc().From("*");
                 builder.AddFrameAncestors().From("*");
@@ -39,7 +39,7 @@ public class Startup
                 builder.AddImgSrc().From("*").Data();
                 builder.AddObjectSrc().From("*");
                 builder.AddScriptSrc().From("*").UnsafeInline().UnsafeEval();
-                builder.AddStyleSrc().From("*").UnsafeEval().UnsafeInline();
+                builder.AddStyleSrc().From("*").UnsafeHashes().WithHash256("MCP66z4xZsFojgSzAEKSw3cor5mYnm49IoGrnIBfEO4="); //.UnsafeEval().UnsafeInline();
             })
             .RemoveServerHeader();
 
