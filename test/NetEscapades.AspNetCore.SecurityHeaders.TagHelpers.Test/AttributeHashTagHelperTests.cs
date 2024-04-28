@@ -20,6 +20,10 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
     public class AttributeHashTagHelperTests
     {
         const string inlineStyleSnippet = "background: red";
+        const string inlineMultiLineStyleSnippet =
+@"background: red;
+color: blue;";
+
         const string inlineScriptSnippet = "myScript()";
 
         [Fact]
@@ -69,6 +73,31 @@ namespace NetEscapades.AspNetCore.SecurityHeaders.TagHelpers.Test
             // Assert
             var hash = Assert.Single(tagHelper.ViewContext.HttpContext.GetStyleCSPHashes());
             var expected = "'sha256-MCP66z4xZsFojgSzAEKSw3cor5mYnm49IoGrnIBfEO4='";
+            Assert.Equal(expected, hash);
+        }
+
+        [Fact]
+        public async Task ProcessAsync_StyleAttributeWithMultiLine_AddsHashToHttpContext()
+        {
+            // Arrange
+            var id = Guid.NewGuid().ToString();
+            var tagName = "div";
+            var styleAttribute = new TagHelperAttribute("style", inlineMultiLineStyleSnippet);
+            var cspAttribute = new TagHelperAttribute("asp-add-attribute-to-csp", "style");
+            var fixture = CreateFixture(id, tagName, new([styleAttribute, cspAttribute]));
+            var tagHelper = new AttributeHashTagHelper()
+            {
+                TargetAttributeName = "style",
+                CSPHashType = CSPHashType.SHA256,
+                ViewContext = GetViewContext(),
+            };
+
+            // Act
+            await tagHelper.ProcessAsync(fixture.Context, fixture.Output);
+
+            // Assert
+            var hash = Assert.Single(tagHelper.ViewContext.HttpContext.GetStyleCSPHashes());
+            var expected = "'sha256-LttsR6Iu9D+xXbKUxLdRQsojrbhLJ0uRF7Gv7hVwMgk='";
             Assert.Equal(expected, hash);
         }
 
