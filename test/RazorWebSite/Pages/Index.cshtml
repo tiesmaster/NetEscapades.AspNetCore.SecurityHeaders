@@ -12,7 +12,7 @@
 
 <h3 id="message">Haha, malicious javascript blocked!</h3>
 
-<h3 style="background&colon; red">Hoi</h3>
+<h3 style="background&colon; red" asp-add-attribute-to-csp="style">Hoi</h3>
 
 <script asp-add-content-to-csp>
     var msg = document.getElementById('message');
