@@ -12,6 +12,8 @@
 
 <h3 id="message">Haha, malicious javascript blocked!</h3>
 
+<h3 style="color: red">If red, then inline style is not blocked</h3>
+
 <script asp-add-content-to-csp>
     var msg = document.getElementById('message');
     msg.innerText = "@message";
